@@ -1,0 +1,14 @@
+{
+	"ReactComponent": {
+        "prefix": "react-c",
+        "scope": "javascript,typescript",
+        "body": [
+			"import React from 'react';",
+			"const ${TM_FILENAME_BASE} = () => (",
+			"\t<div>${TM_FILENAME_BASE}</div>",
+			");",
+			"export default ${TM_FILENAME_BASE};"
+        ],
+        "description": "For Loop"
+    },
+}
