@@ -2,7 +2,7 @@
 	"name": "vs-code",
 	"displayName": "vs-code",
 	"description": "Snippets/Utils plugin for multiple languages",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "imdeepak",
 	"author": {
 		"name": "Deepak Vishwakarma>",
@@ -50,9 +50,6 @@
 		"lint": "tslint -p ./",
 		"watch": "tsc -watch -p ./"
 	},
-	"peerDependencies": {
-		"vscode": "*"
-	},
 	"devDependencies": {
 		"@types/node": "^10.14.20",
 		"@types/vscode": "^1.34.0",
@@ -61,6 +58,7 @@
 		"tslint": "^5.16.0",
 		"tslint-config-prettier": "^1.18.0",
 		"typescript": "^3.5.1",
+		"vscode": "^1.1.36",
 		"webpack": "^4.41.0",
 		"webpack-cli": "^3.3.9"
 	},

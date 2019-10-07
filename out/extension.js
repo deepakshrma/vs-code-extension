@@ -95,7 +95,45 @@ module.exports =
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst fs_1 = __webpack_require__(/*! fs */ \"fs\");\nconst path_1 = __webpack_require__(/*! path */ \"path\");\nconst util_1 = __webpack_require__(/*! ../core/util */ \"./src/core/util.ts\");\nconst USER_HOME = path_1.resolve(process.env.HOME || '~/');\nconst SETTINGS_PATH = path_1.resolve(USER_HOME, 'Library/Application Support/Code/User/settings.json');\nconst logger = util_1.Logger.of('BATMAN');\nfunction setUpAll({ extensionPath }) {\n    return __awaiter(this, void 0, void 0, function* () {\n        try {\n            logger.log('Installing fonts...');\n            util_1.copyR(`${extensionPath}/data/fonts/InputMono/*`, '~/Library/Fonts/');\n            const settingsStr = fs_1.readFileSync(SETTINGS_PATH).toString();\n            const settingsJSON = JSON.parse(settingsStr || '{}');\n            let fontFamily = settingsJSON['editor.fontFamily'];\n            fontFamily = util_1.isEmpty(fontFamily)\n                ? \"Menlo, Monaco, 'Courier New', monospace\"\n                : fontFamily.replace(`'Input Mono',`, '');\n            settingsJSON['editor.fontFamily'] = `'Input Mono', ${fontFamily}`;\n            fs_1.writeFileSync(SETTINGS_PATH, util_1.stringify(settingsJSON));\n            logger.log('Setup done...');\n        }\n        catch (error) {\n            logger.error('Something is wrong happen, please contact github.com/deepakshrma/\\n' + error.message);\n        }\n    });\n}\nexports.setUpAll = setUpAll;\n\n\n//# sourceURL=webpack:///./src/commands/setup_all.ts?");
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = __webpack_require__(/*! fs */ "fs");
+const path_1 = __webpack_require__(/*! path */ "path");
+const util_1 = __webpack_require__(/*! ../core/util */ "./src/core/util.ts");
+const USER_HOME = path_1.resolve(process.env.HOME || '~/');
+const SETTINGS_PATH = path_1.resolve(USER_HOME, 'Library/Application Support/Code/User/settings.json');
+const logger = util_1.Logger.of('BATMAN');
+function setUpAll({ extensionPath }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            logger.log('Installing fonts...');
+            util_1.copyR(`${extensionPath}/data/fonts/InputMono/*`, '~/Library/Fonts/');
+            const settingsStr = fs_1.readFileSync(SETTINGS_PATH).toString();
+            const settingsJSON = JSON.parse(settingsStr || '{}');
+            let fontFamily = settingsJSON['editor.fontFamily'];
+            fontFamily = util_1.isEmpty(fontFamily)
+                ? "Menlo, Monaco, 'Courier New', monospace"
+                : fontFamily.replace(`'Input Mono',`, '');
+            settingsJSON['editor.fontFamily'] = `'Input Mono', ${fontFamily}`;
+            fs_1.writeFileSync(SETTINGS_PATH, util_1.stringify(settingsJSON));
+            logger.log('Setup done...');
+        }
+        catch (error) {
+            logger.error('Something is wrong happen, please contact github.com/deepakshrma/\n' + error.message);
+        }
+    });
+}
+exports.setUpAll = setUpAll;
+
 
 /***/ }),
 
@@ -107,7 +145,46 @@ eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _argument
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst child_process_1 = __webpack_require__(/*! child_process */ \"child_process\");\nconst vscode_1 = __webpack_require__(/*! vscode */ \"vscode\");\nclass Logger {\n    constructor(context) {\n        this.context$$ = context;\n    }\n    static of(context) {\n        if (this.instance$ === undefined) {\n            this.instance$ = new Logger(context);\n        }\n        return this.instance$;\n    }\n    log(message) {\n        vscode_1.window.showInformationMessage(`${this.context$$}: ${message}`);\n    }\n    error(message) {\n        vscode_1.window.showErrorMessage(`${this.context$$}: ${message}`);\n    }\n    warn(message) {\n        vscode_1.window.showWarningMessage(`${this.context$$}: ${message}`);\n    }\n}\nexports.Logger = Logger;\nexports.copyR = (src, dest) => child_process_1.execSync(`cp -r ${src} ${dest}`);\nexports.isEmpty = (data) => {\n    if (!data) {\n        return true;\n    }\n    if (typeof data === 'string') {\n        return data.replace(/\\s+/g, '') === '';\n    }\n    if (Array.isArray(data)) {\n        return data.length === 0;\n    }\n    return JSON.stringify(data) === '{}';\n};\nexports.stringify = (obj, tabs = 4) => JSON.stringify(obj, null, tabs);\n\n\n//# sourceURL=webpack:///./src/core/util.ts?");
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const child_process_1 = __webpack_require__(/*! child_process */ "child_process");
+const vscode_1 = __webpack_require__(/*! vscode */ "vscode");
+class Logger {
+    constructor(context) {
+        this.context$$ = context;
+    }
+    static of(context) {
+        if (this.instance$ === undefined) {
+            this.instance$ = new Logger(context);
+        }
+        return this.instance$;
+    }
+    log(message) {
+        vscode_1.window.showInformationMessage(`${this.context$$}: ${message}`);
+    }
+    error(message) {
+        vscode_1.window.showErrorMessage(`${this.context$$}: ${message}`);
+    }
+    warn(message) {
+        vscode_1.window.showWarningMessage(`${this.context$$}: ${message}`);
+    }
+}
+exports.Logger = Logger;
+exports.copyR = (src, dest) => child_process_1.execSync(`cp -r ${src} ${dest}`);
+exports.isEmpty = (data) => {
+    if (!data) {
+        return true;
+    }
+    if (typeof data === 'string') {
+        return data.replace(/\s+/g, '') === '';
+    }
+    if (Array.isArray(data)) {
+        return data.length === 0;
+    }
+    return JSON.stringify(data) === '{}';
+};
+exports.stringify = (obj, tabs = 4) => JSON.stringify(obj, null, tabs);
+
 
 /***/ }),
 
@@ -119,7 +196,29 @@ eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst vscode_1 = __webpack_require__(/*! vscode */ \"vscode\");\nconst setup_all_1 = __webpack_require__(/*! ./commands/setup_all */ \"./src/commands/setup_all.ts\");\nconst util_1 = __webpack_require__(/*! ./core/util */ \"./src/core/util.ts\");\nconst logger = util_1.Logger.of('BATMAN');\nvar COMMANDS;\n(function (COMMANDS) {\n    COMMANDS[\"SET_UP_ALL\"] = \"extension.set_up_all\";\n})(COMMANDS || (COMMANDS = {}));\nfunction activate(context) {\n    logger.log('BAT Mobile has been activated');\n    context.subscriptions.push(vscode_1.commands.registerCommand(COMMANDS.SET_UP_ALL, () => {\n        setup_all_1.setUpAll({ extensionPath: context.extensionPath });\n    }));\n}\nexports.activate = activate;\nfunction deactivate() {\n    // tslint:disable-next-line:no-console\n    logger.error('BatMobile is deactivated');\n}\nexports.deactivate = deactivate;\n\n\n//# sourceURL=webpack:///./src/extension.ts?");
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const vscode_1 = __webpack_require__(/*! vscode */ "vscode");
+const setup_all_1 = __webpack_require__(/*! ./commands/setup_all */ "./src/commands/setup_all.ts");
+const util_1 = __webpack_require__(/*! ./core/util */ "./src/core/util.ts");
+const logger = util_1.Logger.of('BATMAN');
+var COMMANDS;
+(function (COMMANDS) {
+    COMMANDS["SET_UP_ALL"] = "extension.set_up_all";
+})(COMMANDS || (COMMANDS = {}));
+function activate(context) {
+    logger.log('BAT Mobile has been activated');
+    context.subscriptions.push(vscode_1.commands.registerCommand(COMMANDS.SET_UP_ALL, () => {
+        setup_all_1.setUpAll({ extensionPath: context.extensionPath });
+    }));
+}
+exports.activate = activate;
+function deactivate() {
+    // tslint:disable-next-line:no-console
+    logger.error('BatMobile is deactivated');
+}
+exports.deactivate = deactivate;
+
 
 /***/ }),
 
@@ -130,7 +229,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require(\"child_process\");\n\n//# sourceURL=webpack:///external_%22child_process%22?");
+module.exports = require("child_process");
 
 /***/ }),
 
@@ -141,7 +240,7 @@ eval("module.exports = require(\"child_process\");\n\n//# sourceURL=webpack:///e
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require(\"fs\");\n\n//# sourceURL=webpack:///external_%22fs%22?");
+module.exports = require("fs");
 
 /***/ }),
 
@@ -152,7 +251,7 @@ eval("module.exports = require(\"fs\");\n\n//# sourceURL=webpack:///external_%22
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require(\"path\");\n\n//# sourceURL=webpack:///external_%22path%22?");
+module.exports = require("path");
 
 /***/ }),
 
@@ -163,8 +262,9 @@ eval("module.exports = require(\"path\");\n\n//# sourceURL=webpack:///external_%
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require(\"vscode\");\n\n//# sourceURL=webpack:///external_%22vscode%22?");
+module.exports = require("vscode");
 
 /***/ })
 
 /******/ });
+//# sourceMappingURL=extension.js.map
