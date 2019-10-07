@@ -1,0 +1,7 @@
+vscode-extension-samples
+.DS_Store
+npm-debug.log
+Thumbs.db
+.vs
+node_modules/
+test/
