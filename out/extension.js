@@ -138,15 +138,17 @@ function setUpAll({ extensionPath }) {
 exports.setUpAll = setUpAll;
 function installExt({ extensionPath }) {
     return __awaiter(this, void 0, void 0, function* () {
-        const extensionsList = child_process_1.execSync(`cat ${extensionPath}/data/list_of_extensions.txt`)
-            .toString()
-            .split('\n');
+        const extensionsList = util_2.lines(child_process_1.execSync(`cat ${extensionPath}/data/list_of_extensions.txt`)
+            .toString());
+        const curExtList = util_2.lines(child_process_1.execSync(`code --list-extensions`)
+            .toString());
+        const missingExtList = util_2.removeAll(extensionsList, curExtList);
         let counter = 0;
-        util_2.series(extensionsList, (ext) => {
+        util_2.runInSeries(missingExtList, (ext) => {
             counter += 1;
             return execWithPromise(`code --install-extension ${ext}`).then(x => {
                 logger.log(x.stdout);
-                if (counter === extensionsList.length) {
+                if (counter === missingExtList.length) {
                     logger.log('Installing extensions done!!');
                 }
             });
@@ -215,14 +217,21 @@ exports.isEmpty = (data) => {
     return JSON.stringify(data) === '{}';
 };
 exports.stringify = (obj, tabs = 4) => JSON.stringify(obj, null, tabs);
-function series(values, fn) {
+function runInSeries(values, fn) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const value of values) {
             yield fn(value);
         }
     });
 }
-exports.series = series;
+exports.runInSeries = runInSeries;
+exports.lines = (str = '') => str.trim().split('\n');
+exports.removeAll = (arr, val) => val.reduce((res, cur) => {
+    if (res.indexOf(cur) !== -1) {
+        res.splice(res.indexOf(cur), 1);
+    }
+    return res;
+}, arr);
 
 
 /***/ }),

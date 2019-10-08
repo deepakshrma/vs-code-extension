@@ -2,7 +2,7 @@ import { exec, execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { promisify } from 'util';
-import { copyR, isEmpty, Logger, series, stringify } from '../core/util';
+import { copyR, isEmpty, lines, Logger, removeAll, runInSeries, stringify } from '../core/util';
 const execWithPromise = promisify(exec);
 
 const USER_HOME = resolve(process.env.HOME || '~/');
@@ -32,15 +32,17 @@ export async function setUpAll({ extensionPath }: { extensionPath: string }) {
 	}
 }
 export async function installExt({ extensionPath }: { extensionPath: string }) {
-	const extensionsList = execSync(`cat ${extensionPath}/data/list_of_extensions.txt`)
-		.toString()
-		.split('\n');
+	const extensionsList = lines(execSync(`cat ${extensionPath}/data/list_of_extensions.txt`)
+		.toString());
+	const curExtList = lines(execSync(`code --list-extensions`)
+		.toString());
+	const missingExtList = removeAll(extensionsList, curExtList);
 	let counter = 0;
-	series(extensionsList, (ext: string) => {
+	runInSeries(missingExtList, (ext: string) => {
 		counter += 1;
 		return execWithPromise(`code --install-extension ${ext}`).then(x => {
 			logger.log(x.stdout);
-			if (counter === extensionsList.length) {
+			if (counter === missingExtList.length) {
 				logger.log('Installing extensions done!!');
 			}
 		});

@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 // tslint:disable-next-line:no-implicit-dependencies
-import { window } from 'vscode'; 
+import { window } from 'vscode';
 
 export class Logger {
 	public static of(context: string): Logger {
@@ -38,8 +38,17 @@ export const isEmpty = (data: any): boolean => {
 	return JSON.stringify(data) === '{}';
 };
 export const stringify = (obj: any, tabs: number = 4) => JSON.stringify(obj, null, tabs);
-export async function series<T extends any>(values: T[], fn: (x: T) => any) {
+
+export async function runInSeries<T extends any>(values: T[], fn: (x: T) => any) {
 	for (const value of values) {
 		await fn(value);
 	}
 }
+export const lines = (str: string = '') => str.trim().split('\n');
+export const removeAll = <T>(arr: T[], val: T[]) =>
+	val.reduce((res, cur) => {
+		if (res.indexOf(cur) !== -1) {
+			res.splice(res.indexOf(cur), 1);
+		}
+		return res;
+	}, arr);
