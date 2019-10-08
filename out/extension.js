@@ -106,25 +106,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const child_process_1 = __webpack_require__(/*! child_process */ "child_process");
 const fs_1 = __webpack_require__(/*! fs */ "fs");
 const path_1 = __webpack_require__(/*! path */ "path");
-const util_1 = __webpack_require__(/*! ../core/util */ "./src/core/util.ts");
+const util_1 = __webpack_require__(/*! util */ "util");
+const util_2 = __webpack_require__(/*! ../core/util */ "./src/core/util.ts");
+const execWithPromise = util_1.promisify(child_process_1.exec);
 const USER_HOME = path_1.resolve(process.env.HOME || '~/');
 const SETTINGS_PATH = path_1.resolve(USER_HOME, 'Library/Application Support/Code/User/settings.json');
-const logger = util_1.Logger.of('BATMAN');
+const logger = util_2.Logger.of('BATMAN');
 function setUpAll({ extensionPath }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             logger.log('Installing fonts...');
-            util_1.copyR(`${extensionPath}/data/fonts/InputMono/*`, '~/Library/Fonts/');
+            util_2.copyR(`${extensionPath}/data/fonts/InputMono/*`, '~/Library/Fonts/');
             const settingsStr = fs_1.readFileSync(SETTINGS_PATH).toString();
             const settingsJSON = JSON.parse(settingsStr || '{}');
             let fontFamily = settingsJSON['editor.fontFamily'];
-            fontFamily = util_1.isEmpty(fontFamily)
+            fontFamily = util_2.isEmpty(fontFamily)
                 ? "Menlo, Monaco, 'Courier New', monospace"
                 : fontFamily.replace(`'Input Mono',`, '');
             settingsJSON['editor.fontFamily'] = `'Input Mono', ${fontFamily}`;
-            fs_1.writeFileSync(SETTINGS_PATH, util_1.stringify(settingsJSON));
+            fs_1.writeFileSync(SETTINGS_PATH, util_2.stringify(settingsJSON));
             logger.log('Setup done...');
         }
         catch (error) {
@@ -133,6 +136,24 @@ function setUpAll({ extensionPath }) {
     });
 }
 exports.setUpAll = setUpAll;
+function installExt({ extensionPath }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const extensionsList = child_process_1.execSync(`cat ${extensionPath}/data/list_of_extensions.txt`)
+            .toString()
+            .split('\n');
+        let counter = 0;
+        util_2.series(extensionsList, (ext) => {
+            counter += 1;
+            return execWithPromise(`code --install-extension ${ext}`).then(x => {
+                logger.log(x.stdout);
+                if (counter === extensionsList.length) {
+                    logger.log('Installing extensions done!!');
+                }
+            });
+        });
+    });
+}
+exports.installExt = installExt;
 
 
 /***/ }),
@@ -146,8 +167,18 @@ exports.setUpAll = setUpAll;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = __webpack_require__(/*! child_process */ "child_process");
+// tslint:disable-next-line:no-implicit-dependencies
 const vscode_1 = __webpack_require__(/*! vscode */ "vscode");
 class Logger {
     constructor(context) {
@@ -184,6 +215,14 @@ exports.isEmpty = (data) => {
     return JSON.stringify(data) === '{}';
 };
 exports.stringify = (obj, tabs = 4) => JSON.stringify(obj, null, tabs);
+function series(values, fn) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (const value of values) {
+            yield fn(value);
+        }
+    });
+}
+exports.series = series;
 
 
 /***/ }),
@@ -198,6 +237,7 @@ exports.stringify = (obj, tabs = 4) => JSON.stringify(obj, null, tabs);
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+// tslint:disable-next-line:no-implicit-dependencies
 const vscode_1 = __webpack_require__(/*! vscode */ "vscode");
 const setup_all_1 = __webpack_require__(/*! ./commands/setup_all */ "./src/commands/setup_all.ts");
 const util_1 = __webpack_require__(/*! ./core/util */ "./src/core/util.ts");
@@ -205,11 +245,15 @@ const logger = util_1.Logger.of('BATMAN');
 var COMMANDS;
 (function (COMMANDS) {
     COMMANDS["SET_UP_ALL"] = "extension.set_up_all";
+    COMMANDS["INSTALL_EXTS"] = "extension.install_extension";
 })(COMMANDS || (COMMANDS = {}));
 function activate(context) {
     logger.log('BAT Mobile has been activated');
     context.subscriptions.push(vscode_1.commands.registerCommand(COMMANDS.SET_UP_ALL, () => {
         setup_all_1.setUpAll({ extensionPath: context.extensionPath });
+    }));
+    context.subscriptions.push(vscode_1.commands.registerCommand(COMMANDS.INSTALL_EXTS, () => {
+        setup_all_1.installExt({ extensionPath: context.extensionPath });
     }));
 }
 exports.activate = activate;
@@ -252,6 +296,17 @@ module.exports = require("fs");
 /***/ (function(module, exports) {
 
 module.exports = require("path");
+
+/***/ }),
+
+/***/ "util":
+/*!***********************!*\
+  !*** external "util" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("util");
 
 /***/ }),
 

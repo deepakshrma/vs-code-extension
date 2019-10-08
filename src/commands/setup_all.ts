@@ -1,11 +1,16 @@
+import { exec, execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { copyR, isEmpty, Logger, stringify } from '../core/util';
+import { promisify } from 'util';
+import { copyR, isEmpty, Logger, series, stringify } from '../core/util';
+const execWithPromise = promisify(exec);
+
 const USER_HOME = resolve(process.env.HOME || '~/');
 const SETTINGS_PATH = resolve(
 	USER_HOME,
 	'Library/Application Support/Code/User/settings.json',
 );
+
 const logger = Logger.of('BATMAN');
 export async function setUpAll({ extensionPath }: { extensionPath: string }) {
 	try {
@@ -25,4 +30,19 @@ export async function setUpAll({ extensionPath }: { extensionPath: string }) {
 			'Something is wrong happen, please contact github.com/deepakshrma/\n' + error.message,
 		);
 	}
+}
+export async function installExt({ extensionPath }: { extensionPath: string }) {
+	const extensionsList = execSync(`cat ${extensionPath}/data/list_of_extensions.txt`)
+		.toString()
+		.split('\n');
+	let counter = 0;
+	series(extensionsList, (ext: string) => {
+		counter += 1;
+		return execWithPromise(`code --install-extension ${ext}`).then(x => {
+			logger.log(x.stdout);
+			if (counter === extensionsList.length) {
+				logger.log('Installing extensions done!!');
+			}
+		});
+	});
 }

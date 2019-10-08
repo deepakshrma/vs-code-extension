@@ -2,7 +2,7 @@
 	"name": "vs-code",
 	"displayName": "vs-code",
 	"description": "Snippets/Utils plugin for multiple languages",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "imdeepak",
 	"author": {
 		"name": "Deepak Vishwakarma>",
@@ -21,7 +21,7 @@
 		"SCM Providers"
 	],
 	"activationEvents": [
-		"onCommand:extension.set_up_all"
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -29,6 +29,10 @@
 			{
 				"command": "extension.set_up_all",
 				"title": "BATMAN: Setup all"
+			},
+			{
+				"command": "extension.install_extension",
+				"title": "BATMAN: Install Extensions"
 			}
 		],
 		"themes": [
@@ -36,6 +40,32 @@
 				"label": "xdeepakv_theme",
 				"uiTheme": "vs-dark",
 				"path": "./themes/xdeepakv-color-theme.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "javascript",
+				"path": "./snippets/snippets.json"
+			},
+			{
+				"language": "javascriptreact",
+				"path": "./snippets/snippets.json"
+			},
+			{
+				"language": "typescript",
+				"path": "./snippets/snippets.json"
+			},
+			{
+				"language": "typescriptreact",
+				"path": "./snippets/snippets.json"
+			},
+			{
+				"language": "typescript",
+				"path": "./snippets/ts-snippets.json"
+			},
+			{
+				"language": "typescriptreact",
+				"path": "./snippets/ts-snippets.json"
 			}
 		]
 	},
@@ -58,7 +88,6 @@
 		"tslint": "^5.16.0",
 		"tslint-config-prettier": "^1.18.0",
 		"typescript": "^3.5.1",
-		"vscode": "^1.1.36",
 		"webpack": "^4.41.0",
 		"webpack-cli": "^3.3.9"
 	},

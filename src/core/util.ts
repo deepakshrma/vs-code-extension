@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
-import { window } from 'vscode';
+// tslint:disable-next-line:no-implicit-dependencies
+import { window } from 'vscode'; 
 
 export class Logger {
 	public static of(context: string): Logger {
@@ -37,3 +38,8 @@ export const isEmpty = (data: any): boolean => {
 	return JSON.stringify(data) === '{}';
 };
 export const stringify = (obj: any, tabs: number = 4) => JSON.stringify(obj, null, tabs);
+export async function series<T extends any>(values: T[], fn: (x: T) => any) {
+	for (const value of values) {
+		await fn(value);
+	}
+}
