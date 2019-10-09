@@ -7,11 +7,11 @@ Snippets/Utils plugin for multiple languages
 ## How to install
 
 ```
-code --install-extension vs-code-0.0.1.vsix
+code --install-extension *.vsix
 ```
 
 ## Developers::
 ```
 npm run package
-code --install-extension vs-code-0.0.1.vsix
+code --install-extension *.vsix
 ```

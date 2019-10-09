@@ -1,8 +1,8 @@
 {
-	"name": "vs-code",
-	"displayName": "vs-code",
+	"name": "batman-vs-code",
+	"displayName": "Batman: Super power coding",
 	"description": "Snippets/Utils plugin for multiple languages",
-	"version": "0.0.4",
+	"version": "0.0.6",
 	"publisher": "imdeepak",
 	"author": {
 		"name": "Deepak Vishwakarma>",
@@ -28,18 +28,25 @@
 		"commands": [
 			{
 				"command": "extension.set_up_all",
-				"title": "BATMAN: Setup all"
+				"title": "Setup all",
+				"category": "BATMAN"
 			},
 			{
 				"command": "extension.install_extension",
-				"title": "BATMAN: Install Extensions"
+				"title": "Install Extensions",
+				"category": "BATMAN"
+			},
+			{
+				"command": "extension.dancing_batman",
+				"title": "Dance",
+				"category": "BATMAN"
 			}
 		],
 		"themes": [
 			{
-				"label": "xdeepakv_theme",
+				"label": "Batman Dark",
 				"uiTheme": "vs-dark",
-				"path": "./themes/xdeepakv-color-theme.json"
+				"path": "./themes/batman_dark_theme.json"
 			}
 		],
 		"snippets": [
@@ -66,6 +73,10 @@
 			{
 				"language": "typescriptreact",
 				"path": "./snippets/ts-snippets.json"
+			},
+			{
+				"language": "json",
+				"path": "./snippets/json.json"
 			}
 		]
 	},
